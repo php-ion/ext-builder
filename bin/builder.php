@@ -9,7 +9,7 @@ $builder->run();
 
 class Builder
 {
-
+    public $repo = 'php-ion/builds';
     /**
      * Checks whether the parameter
      *
@@ -55,13 +55,13 @@ class Builder
 
         $ion_version = $this->getOption("ion-version");
         $config = require('config/config.php');
+        $readme = file_get_contents('resources/readme.header.md');
         foreach ($config["matrix"] as $os => $matrix) {
             if(!file_exists("docker/$os")) {
                 throw new RuntimeException("Dockerfile for $os not found");
             }
+            $readme .= "\n## ".ucfirst($os)."\n\n";
             $images = iterator_to_array(self::combination($matrix));
-            var_dump($images);
-            exit;
             $this->write("Begin build ".count($images)." images...");
             foreach ($images as $image_path => $args) {
                 $this->write("\nINFO: Build image $image_path");
@@ -76,7 +76,12 @@ class Builder
                 @mkdir($path."/".$image_path, 0777, true);
                 $this->exec("docker cp ion-$image_id:/usr/src/ion.so - > $path/$image_path/ion-{$ion_version}.so");
                 $this->exec("docker rm -v ion-$image_id");
+
+                $readme .= " * [$image_path/ion-{$ion_version}.so](https://raw.githubusercontent.com/php-ion/builds/master/$image_path/ion-{$ion_version}.so)"
+                    ." (".round(filesize("$path/$image_path/ion-{$ion_version}.so")/1024)." KiB)\n";
             }
+
+            $readme .= "\n---\n*Build date: ".gmdate("Y-m-d H:i:s") . " GMT*";
         }
     }
 

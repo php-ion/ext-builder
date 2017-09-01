@@ -7,8 +7,5 @@
             "name": "Ivan Shalganov",
             "email": "a.cobest@gmail.com"
         }
-    ],
-    "require": {
-        "fenom/fenom": "*"
-    }
+    ]
 }
