@@ -1,0 +1,14 @@
+{
+    "name": "ion/ext-builder",
+    "description": "ION shared objects builder",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Ivan Shalganov",
+            "email": "a.cobest@gmail.com"
+        }
+    ],
+    "require": {
+        "fenom/fenom": "*"
+    }
+}
