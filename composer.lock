@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "f374c47028ea3d3098eedc390c988535",
+    "content-hash": "73bd3ff9b5b97842dd4c44209f28a431",
     "packages": [
         {
             "name": "fenom/fenom",

@@ -1,46 +1,54 @@
 <?php
 
+use ION\Ext\Builder;
+
 return [
-    "matrix" => [
-        "ubuntu" => [
-            "UBUNTU_VERSION" => [
-//                "12.04",
-//                "14.04",
-                "16.04",
-//                "17.04"
-            ],
-            "PHP_RELEASE"    => [
-                "php7.0" => "php-7.0.23",
-                "php7.1" => "php-7.1.8",
-                "php7.2" => "php-7.2.0RC1"
-            ],
-            "PHP_DEBUG"      => [
-                "debug" => "--enable-debug",
-                "non-debug" => ""
-            ],
-            "PHP_ZTS"        => [
-                "zts" => "--enable-maintainer-zts",
-                "nts" => ""
-            ],
+    "php_releases" => [
+        "php-7.0" => "php-7.0.23",
+        "php-7.1" => "php-7.1.8",
+    ],
+    "builds" => [
+//        "linux" => [
+//            "mode"   => Builder::MODE_DOCKER,
+//            "docker_os" => 'ubuntu',
+//            "matrix" => [
+//                "OS_RELEASE" => [
+//                    "ubuntu-16.04" => "16.04"
+//                ],
+//                "PHP_RELEASE"    => [
+//                    "php-7.0" => "php-7.0.23",
+//                    "php-7.1" => "php-7.1.8",
+//                ],
+//                "PHP_DEBUG"      => [
+//                    "debug" => "--enable-debug",
+//                    "non-debug" => ""
+//                ],
+//                "PHP_ZTS"        => [
+//                    "zts" => "--enable-maintainer-zts",
+//                    "nts" => ""
+//                ],
+//            ]
+//        ],
+        "macos" => [
+            "mode"   =>  Builder::MODE_LOCAL,
+            "build_path"  => __DIR__ . '/../build/macos',
+            "matrix" => [
+                "OS_RELEASE" => [
+                    "macos-10.12" => "10.12"
+                ],
+                "PHP_RELEASE"    => [
+                    "php-7.0" => "php-7.0.23",
+                    "php-7.1" => "php-7.1.8",
+                ],
+                "PHP_DEBUG"      => [
+                    "debug" => "--enable-debug",
+                    "non-debug" => ""
+                ],
+                "PHP_ZTS"        => [
+                    "zts" => "--enable-maintainer-zts",
+                    "nts" => ""
+                ],
+            ]
         ],
-//        "debian" => [
-//            "DEBIAN_VERSION" => [
-//                "8",
-//                "7",
-//            ],
-//            "PHP_RELEASE"    => [
-//                "php70" => "php-7.0.23",
-//                "php71" => "php-7.1.8",
-//                "php72" => "php-7.2.0RC1"
-//            ],
-//            "PHP_DEBUG"      => [
-//                "debug" => "--enable-debug",
-//                "non-debug" => ""
-//            ],
-//            "PHP_ZTS"        => [
-//                "zts" => "--enable-maintainer-zts",
-//                "nts" => ""
-//            ],
-//        ]
     ],
 ];

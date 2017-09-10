@@ -1,11 +1,20 @@
 {
-    "name": "ion/ext-builder",
-    "description": "ION shared objects builder",
+    "name": "php-ion/ext-builder",
+    "description": "ION extension builder for Linux, MacOS",
     "type": "project",
     "authors": [
         {
             "name": "Ivan Shalganov",
             "email": "a.cobest@gmail.com"
         }
-    ]
+    ],
+
+    "autoload": {
+        "psr-4": {
+            "ION\\Ext\\": "src/"
+        }
+    },
+    "require": {
+        "fenom/fenom": "^2.11"
+    }
 }
