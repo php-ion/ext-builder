@@ -128,7 +128,10 @@ HELP;
         $this->indexer($path);
     }
 
-    public function indexer($path) {
+    /**
+     * @param string $path
+     */
+    public function indexer(string $path) {
         $index = [];
         $list  = [];
         $it = new \RecursiveDirectoryIterator($path,
@@ -150,11 +153,11 @@ HELP;
                 throw new \RuntimeException("Can't parse $relative");
             }
             if (strpos($matches["version"], ".")) {
-                $version_int = 0;
-            } else {
                 $version_int = intval(sprintf("%'.02d%'.02d%'.02d", ...explode(".", $matches["version"])));
+            } else {
+                $version_int = 0;
             }
-            $index[$matches["version"]][$matches["os"]][$matches["php_version"]][] = [
+            $index[$matches["version"]][basename($relative)] = [
                 "path" => $relative,
                 "version" => $matches["version"],
                 "version_int" => $version_int,
