@@ -26,7 +26,6 @@ class Builder
     {
         chdir(dirname(__DIR__));
         $this->config = require(__DIR__.'/../config/config.php');
-        $this->readme_header = file_get_contents(__DIR__.'/../resources/readme.header.md');
 
         $this->dry_run = $this->hasOption("dry-run");
         $this->version = $this->getOption("build");
@@ -126,6 +125,7 @@ HELP;
                 $builder->cleanup();
             }
         }
+        $this->indexer($path);
     }
 
     public function indexer($path) {
@@ -143,17 +143,18 @@ HELP;
                 continue;
             }
             if(!preg_match(
-                '#^(?<version>\d+\.\d+\.\d+)/(?<os_group>\w+)/(?<os>.*?)_php-(?<php_version>\d+\.\d+)_(?<debug>.*?)_(?<zts>.*?)\.so$#Su',
+                '#^(?<version>.*?)/(?<os_group>\w+)/(?<os>.*?)_php-(?<php_version>\d+\.\d+)_(?<debug>.*?)_(?<zts>.*?)\.so$#Su',
                 $relative,
                 $matches
             )) {
                 throw new \RuntimeException("Can't parse $relative");
             }
-            $version_int = intval(sprintf("%'.02d%'.02d%'.02d", ...explode(".", $matches["version"])));
-            if (!isset($index[$matches["os"]])) {
-                $index[$matches["os"]] = [];
+            if (strpos($matches["version"], ".")) {
+                $version_int = 0;
+            } else {
+                $version_int = intval(sprintf("%'.02d%'.02d%'.02d", ...explode(".", $matches["version"])));
             }
-            $index[$matches["os"]][] = [
+            $index[$matches["version"]][$matches["os"]][$matches["php_version"]][] = [
                 "path" => $relative,
                 "version" => $matches["version"],
                 "version_int" => $version_int,
@@ -168,13 +169,14 @@ HELP;
             ];
 
             $list[ $matches["version"] ][ $matches["os_group"] ][]
-                = "<a href='https://github.com/php-ion/builds/blob/master/builds/$relative?raw=true'>".basename($relative)."</a> _("
+                = "[".basename($relative)."](./$relative?raw=true) _("
                 . round(filesize($path."/".$relative)/1024/1024, 1)." MiB, "
                 . gmdate("Y-m-d H:i:s", filemtime($path."/".$relative))
                 .")_";
         }
         arsort($list);
-        $readme = ["List Of Builds\n===\n"];
+        arsort($index);
+        $readme = ["List of PHP-ION builds\n===\n"];
         foreach ($list as $version => $os) {
             $readme[] = "# $version\n";
             foreach ($os as $os_name => $links) {
