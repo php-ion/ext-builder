@@ -102,6 +102,7 @@ HELP;
             throw new \RuntimeException("No --build present");
         }
         $mask   = $this->getOption("mask");
+        $force  = $this->hasOption("force");
         foreach($this->config["builds"] as $os => $info) {
             $variants = iterator_to_array(self::combination($info["matrix"]));
             $this->write("\nTotal ".count($variants)." variants for $os...");
@@ -112,6 +113,9 @@ HELP;
             }
             foreach ($variants as $id => $vars) {
                 $target = "{$path}/{$this->version}/{$os}/" . implode("_", array_keys($vars)) . ".so";
+                if (file_exists($target) && !$force) {
+                    continue;
+                }
                 if ($mask && fnmatch($mask, $target) == false) {
                     continue;
                 }
@@ -121,7 +125,7 @@ HELP;
                 if (!file_exists(dirname($target))) {
                     mkdir(dirname($target), 0755, true)  ;
                 }
-                $builder->copyTo("{$path}/{$this->version}/{$os}/" . implode("_", array_keys($vars)) . ".so");
+                $builder->copyTo($target);
                 $builder->cleanup();
             }
         }
@@ -188,7 +192,11 @@ HELP;
         }
 
         file_put_contents("{$path}/readme.md", implode("\n", $readme));
-        file_put_contents("{$path}/index.json", json_encode($index, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+        file_put_contents("{$path}/index.json", json_encode([
+            "date"     => gmdate("Y-m-d H:i:s"),
+            "os"       => $this->config["os_map"],
+            "variants" => $index
+        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
     }
 
     public function error($msg) {
