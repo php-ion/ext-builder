@@ -105,20 +105,24 @@ HELP;
         $force  = $this->hasOption("force");
         foreach($this->config["builds"] as $os => $info) {
             $variants = iterator_to_array(self::combination($info["matrix"]));
-            $this->write("\nTotal ".count($variants)." variants for $os...");
+            $this->write("Total ".count($variants)." variants for $os...");
             if ($info["mode"] == self::MODE_DOCKER) {
                 $builder = new DockerBuilder($this, $info["docker_os"], "16.04");
             } else {
                 $builder = new CompileBuilder($this, $info["build_path"]);
             }
             foreach ($variants as $id => $vars) {
-                $target = "{$path}/{$this->version}/{$os}/" . implode("_", array_keys($vars)) . ".so";
+                $target_rel = "{$this->version}/{$os}/" . implode("_", array_keys($vars)) . ".so";
+                $target = "{$path}/{$target_rel}";
+                if ($mask && fnmatch($mask, $target_rel) == false) {
+                    $this->write("SKIP: Target $target_rel do not match by mask (use --force). Skip build.");
+                    continue;
+                }
                 if (file_exists($target) && !$force) {
+                    $this->write("SKIP: Target $target already exists. Skip build.");
                     continue;
                 }
-                if ($mask && fnmatch($mask, $target) == false) {
-                    continue;
-                }
+
                 $this->write("\nBUILD ".implode(" ", array_keys($vars)));
                 $builder->build($vars + ["ion{$this->version}" => "ION_RELEASE='{$this->version}'"]);
 

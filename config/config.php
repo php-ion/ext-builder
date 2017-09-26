@@ -5,7 +5,8 @@ use ION\Ext\Builder;
 return [
     "os_map" => [
         "linux" => [
-            "*" => "ubuntu-16.4"
+//            "ubuntu-14.*" => "ubuntu-14.04",
+            "*"           => "ubuntu-16.04"
         ],
         "macos" => [
             "darwin-16.*" => "darwin-16"
@@ -17,7 +18,8 @@ return [
             "docker_os" => 'ubuntu',
             "matrix" => [
                 "OS_RELEASE" => [
-                    "ubuntu-16.04" => "16.04"
+                    "ubuntu-16.04" => "16.04",
+//                    "ubuntu-14.04" => "14.04",
                 ],
                 "PHP_RELEASE"    => [
                     "php-7.0" => "php-7.0.23",

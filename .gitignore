@@ -1,6 +1,5 @@
 vendor/
 .idea/
 build/*
-docker/**/compile.sh
-
+!.gitkeep
 .DS_Store

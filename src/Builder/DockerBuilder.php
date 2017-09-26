@@ -23,7 +23,7 @@ class DockerBuilder implements BuilderInterface
     {
         $this->builder = $builder;
         $this->image_id = "php-ion:ion_$os$version";
-        $lines = $builder->exec("docker images --format '{{.Tag}}' | grep ".escapeshellarg(" {$this->image_id} ") . " || true", true);
+        $lines = $builder->exec("docker images --format '{{.Tag}}' | grep ".escapeshellarg("ion_$os$version") . " || true", true);
         if (!$lines) {
             if(!file_exists("docker/$os")) {
                 throw new \RuntimeException("Dockerfile for $os not found");
@@ -47,7 +47,7 @@ class DockerBuilder implements BuilderInterface
 
     public function copyTo(string $path) {
         if($this->container_name) {
-            $this->builder->exec("docker cp {$this->container_name}:/root/build/ion.so - > $path");
+            $this->builder->exec("docker cp {$this->container_name}:/root/build/ion.so $path");
         }
     }
 
